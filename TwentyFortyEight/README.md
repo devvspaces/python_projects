@@ -24,9 +24,9 @@ Project has no dependencies
 
 ## Screenshots
 
-![Screenshots of projects](https://dradisframework.com/images/pro/screenshots/screenshot-62_small.png)
+![Screenshots of projects](https://github.com/devvspaces/python_projects/blob/master/TwentyFortyEight/2048_1.png?raw=true)
 
-![Screenshots of the project](http://securityroots.com/blog/wp-content/uploads/2013/12/snowcrash-01.png)
+![Screenshots of the project](https://github.com/devvspaces/python_projects/blob/master/TwentyFortyEight/2048.png?raw=true)
 
 
 ## Features
