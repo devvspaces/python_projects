@@ -33,6 +33,7 @@ Project has no dependencies
 * Can play on any type of grid 2 x 2, 2 x 4, 11 x 5, i x j
 * Added testing of code with my [Simple Test Suite](https://github.com/devvspaces/python_projects/tree/master/Simple_test_suite)
 * Can play game on terminal and online with a GUI
+* Play online with the GUI by using up, down, left, right arrow keys
 
 
 ## Running the tests
