@@ -24,7 +24,7 @@ Project has no dependencies
 
 ## Screenshots
 
-![Screenshots of projects](https://github.com/devvspaces/python_projects/blob/master/TwentyFortyEight/2048_1.png?raw=true)
+![Screenshots of projects](https://raw.githubusercontent.com/devvspaces/python_projects/70c774e9dc323275983cd3043b742c8b217f1581/TwentyFortyEight/2048_1.png)
 
 ![Screenshots of the project](https://github.com/devvspaces/python_projects/blob/master/TwentyFortyEight/2048.png?raw=true)
 
