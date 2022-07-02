@@ -19,6 +19,7 @@ OFFSETS = {UP: (1, 0),
            LEFT: (0, 1),
            RIGHT: (0, -1)}
 
+
 def merge(line):
     """
     Helper function that merges a single row or column in 2048
@@ -35,8 +36,6 @@ def merge(line):
                     result[-1] = item
                 else:
                     result.append(item)
-        
-    
     return result + [0 for _ in range(len(line) - len(result))]
 
 
