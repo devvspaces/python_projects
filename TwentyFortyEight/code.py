@@ -1,6 +1,8 @@
 """
 Clone of 2048 game.
-To play this game online, head to https://py3.codeskulptor.org/#user307_biorjpH9nC_15.py and click on run
+To play this game online, head to
+https://py3.codeskulptor.org/#user307_biorjpH9nC_15.py
+and click on run
 """
 
 # import poc_2048_gui

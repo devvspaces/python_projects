@@ -54,9 +54,15 @@ class TTTBoard:
         return self._dim
 
     def get_height(self) -> int:
+        """
+        Return the row dim as the height
+        """
         return self.get_dim()[0]
 
     def get_width(self) -> int:
+        """
+        Return the col dim as the width
+        """
         return self.get_dim()[1]
 
     def square(self, row: int, col: int):
@@ -118,6 +124,41 @@ class TTTBoard:
             col = start_cell[1] + step * direction[1]
             stride.append((row, col,))
         return stride
+
+    def up_columns(self):
+        ups = self.traverse_grid(
+            (0, 0),
+            (0, 1),
+            self.get_width()
+        )
+        all_ups = []
+        for top in ups:
+            _up = self.traverse_grid(
+                top,
+                (1, 0),
+                self.get_height()
+            )
+            all_ups.append(_up)
+        return all_ups
+
+    def side_columns(self):
+        sides = self.traverse_grid(
+            (0, 0),
+            (1, 0),
+            self.get_height()
+        )
+        all_sides = []
+        for side in sides:
+            _side = self.traverse_grid(
+                side,
+                (0, 1),
+                self.get_width()
+            )
+            all_sides.append(_side)
+        return all_sides
+
+    def diagonal_side_x(self):
+        pass
 
     def check_win(self) -> int:
         """
