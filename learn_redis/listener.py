@@ -1,17 +1,26 @@
 import time
 import redis
 
-# Connect to a local redis instance
-r = redis.Redis(host='localhost', port=6379, db=0)
-print('Connected')
-last_id = '$'  # `$` means only new messages
+r = redis.Redis()
+pubsub = r.pubsub()
+
+
+pubsub.psubscribe('football-*')
+
+
+def is_message(text: str):
+    return text.lstrip('p') == 'message'
+
+
 while True:
-    events = r.xread({"stream_key": last_id}, block=0, count=10)
-    for _, e in events:
-        print(f"new event, amount: {e['amount']}")
-        last_id = e['id']
+    message = pubsub.get_message()
+    print(message)
+    if message is not None and is_message(message.get('type')):
+        print("Got a new message")
+        print("Channel: ", message.get('channel'))
+        print("Message: ", message.get('data'))
+    else:
+        print("No message")
+
     print("\n")
-    # sleep for a while to avoid CPU usage
-    time.sleep(1)
-    # if you want to stop the loop, you can break the loop
-    # break
+    time.sleep(3)

@@ -1,9 +1,17 @@
+from random import randint
+from time import sleep
 import redis
 
-# Connect to a local redis instance
-r = redis.Redis(host='localhost', port=6379, db=0)
-print('Connected')
-event = {"eventType": "purchase", "amount": 5, "item_id": "XXX"}
-r.xadd("stream_key", event, '*')
-# the `*` means that redis generates and event id automatically
-# the `event` is the payload of the event
+r = redis.Redis()
+
+
+def get_channel():
+    channels = ["football-1", "football-2"]
+    return channels[randint(0, 1)]
+
+
+for _ in range(10):
+    ch = get_channel()
+    print(ch)
+    r.publish(ch, "Messi scored")
+    sleep(2)
