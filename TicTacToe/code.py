@@ -21,7 +21,10 @@ SCORE_OTHER = 1.0    # Score for squares played by the other player
 # Add your functions here.
 
 
-def mc_trial(board: Type[provided.TTTBoard], player):
+T = Type[provided.TTTBoard]
+
+
+def mc_trial(board: T, player):
     """
     This function takes a current board and the next player to move.
     The function should play a game starting with the given player by
@@ -29,7 +32,7 @@ def mc_trial(board: Type[provided.TTTBoard], player):
     The modified board will contain the state of the game,
 
     :param board: current board for trial
-    :type board: Type[provided.TTTBoard]
+    :type board: T
     :param player: Player to move next
     :type player: int
     """
@@ -57,8 +60,23 @@ def get_score_to_add(player, winner, value):
 
 
 def mc_update_scores(
-    scores: List[List[int]], board: Type[provided.TTTBoard], player: int
+    scores: List[List[int]], board: T, player: int
 ):
+    """
+    This function takes a grid of scores (a list of lists)
+    with the same dimensions as the Tic-Tac-Toe board, a
+    board from a completed game, and which player the machine
+    player is. The function should score the completed board
+    and update the scores grid. As the function updates
+    the scores grid directly, it does not return anything,
+
+    :param scores: _description_
+    :type scores: List[List[int]]
+    :param board: _description_
+    :type board: T
+    :param player: _description_
+    :type player: int
+    """
     winner = board.check_win()
     if winner == provided.DRAW:
         return
@@ -69,7 +87,18 @@ def mc_update_scores(
             scores[row][col] += get_score_to_add(player, winner, value)
 
 
-def get_best_move(board: Type[provided.TTTBoard], scores) -> Tuple[int]:
+def get_best_move(board: T, scores) -> Tuple[int]:
+    """
+    This function takes a current board and a grid of
+    scores. The function should find all of the empty
+    squares with the maximum score and randomly return
+    one of them as a (row, column) tuple.
+    It is an error to call this function with a
+    board that has no empty squares (there is no
+    possible next move), so your function may do
+    whatever it wants in that case. The case where
+    the board is full will not be tested.
+    """
     empty_positions = board.get_empty_squares()
     best_score = None
     max_score = 0
@@ -81,11 +110,49 @@ def get_best_move(board: Type[provided.TTTBoard], scores) -> Tuple[int]:
     return best_score
 
 
-def mc_move(board, player, trials):
+def init_empty_scores(row, col):
+    """
+    Takes in a row x col dimension and returns
+    empty scores
+    """
+    scores = []
+    for _ in range(row):
+        rows = []
+        for _ in range(col):
+            rows.append(0)
+        scores.append(rows)
+
+    return scores
+
+
+def mc_move(board: T, player, trials):
+    """
+    This function takes a current board, which player the machine
+    player is, and the number of trials to run. The function should
+    use the Monte Carlo simulation described above to return a move
+    for the machine player in the form of a (row, column) tuple.
+    Be sure to use the other functions you have written!
+    """
+
+    scores = init_empty_scores(*board.get_dim())
+
+    for _ in range(trials):
+        # Clone current board
+        clone = board.clone()
+
+        # Run a trial simulation
+        mc_trial(clone, player)
+
+        # Score board cloned, Updates Scores
+        mc_update_scores(scores, clone, player)
+
+    # Get Best move
+    best_move = get_best_move(board, scores)
+    return best_move
+
+
+def play_game(mc_move, trials, reverse):
     pass
-
-
-
 
 
 # Test game with the console or the GUI.  Uncomment whichever

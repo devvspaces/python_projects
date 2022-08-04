@@ -1,11 +1,12 @@
 import copy
 from typing import List, Tuple
 
+from .constants import (DIAG_X, DIAG_Y, DOWN, DRAW, EMPTY, RIGHT, PLAYERO,
+                        PLAYERX)
 
-EMPTY = 0
-PLAYERX = 1
-PLAYERO = 2
-DRAW = 3
+
+def get_board_dim(board: List[list]):
+    return (len(board), len(board[0]))
 
 
 class TTTBoard:
@@ -14,16 +15,21 @@ class TTTBoard:
     """
 
     def __init__(
-        self, dim: Tuple[int], reverse=False, board: List[List[int]] = None
+        self, dim: Tuple[int] = None,
+        reverse=False, board: List[List[int]] = None
     ):
         """
         Initialize the TTTBoard object with the given dimension and
         whether or not the game should be reversed.
         """
-        self._dim = dim
-        self._board = board
-        if self._board is None:
+
+        if board is None:
+            self._dim = dim
             self.setup_board()
+        else:
+            self._board = copy.deepcopy(board)
+            self._dim = get_board_dim(board)
+
         self._empty_squares: List[Tuple[int, int]] = []
         self.set_empty_squares()
 
@@ -36,7 +42,7 @@ class TTTBoard:
         for _ in range(row):
             row_positions = []
             for _ in range(col):
-                row_positions.append(0)
+                row_positions.append(EMPTY)
             board.append(row_positions)
         self._board = board
 
@@ -47,11 +53,18 @@ class TTTBoard:
         for row in self._board:
             print(row)
 
+    def display(self):
+        self.__str__()
+
     def get_dim(self) -> Tuple[int, int]:
         """
         Return the dimension of the board.
         """
         return self._dim
+
+    def is_square(self):
+        """Checks if the board has equal sides"""
+        return self.get_width() == self.get_height()
 
     def get_height(self) -> int:
         """
@@ -82,7 +95,7 @@ class TTTBoard:
         for _row in range(row):
             for _col in range(col):
                 value = self.square(_row, _col)
-                if value == 0:
+                if value == EMPTY:
                     empty.append((_row, _col))
         self._empty_squares = empty
 
@@ -105,7 +118,7 @@ class TTTBoard:
         Does nothing if board square is not empty.
         """
         value = self.square(row, col)
-        if value != 0:
+        if value == EMPTY:
             self._board[row][col] = player
             self.remove_empty_square(row, col)
 
@@ -126,39 +139,93 @@ class TTTBoard:
         return stride
 
     def up_columns(self):
+        """
+        Returns all vertical columns in the board
+        """
         ups = self.traverse_grid(
             (0, 0),
-            (0, 1),
+            RIGHT,
             self.get_width()
         )
         all_ups = []
         for top in ups:
             _up = self.traverse_grid(
                 top,
-                (1, 0),
+                DOWN,
                 self.get_height()
             )
             all_ups.append(_up)
         return all_ups
 
     def side_columns(self):
+        """
+        Returns all horizontal columns in the board
+        """
         sides = self.traverse_grid(
             (0, 0),
-            (1, 0),
+            DOWN,
             self.get_height()
         )
         all_sides = []
         for side in sides:
             _side = self.traverse_grid(
                 side,
-                (0, 1),
+                RIGHT,
                 self.get_width()
             )
             all_sides.append(_side)
         return all_sides
 
     def diagonal_side_x(self):
-        pass
+        """
+        Returns all top-left to bottom-right cells in the board
+        ```
+        |x|-|-|
+        |-|x|-|
+        |-|-|x|
+        ```
+        """
+        side = self.traverse_grid(
+            (0, 0),
+            DIAG_X,
+            self.get_height()
+        )
+        return side
+
+    def diagonal_side_y(self):
+        """
+        Returns all bottom-left to top-right cells in the board
+        ```
+        |-|-|x|
+        |-|x|-|
+        |x|-|-|
+        ```
+        """
+        side = self.traverse_grid(
+            (self.get_height() - 1, 0),
+            DIAG_Y,
+            self.get_height()
+        )
+        return side
+
+    def get_player_on_cells(self, list_of_cells):
+        """
+        Maps row,col values to actual cell values on board
+        """
+        return [
+            self.square(row, col)
+            for row, col in list_of_cells
+        ]
+
+    def get_winner(self, players_cells: list):
+        """
+        Takes a list of players and returns the
+        unique player if available or None
+        """
+        if players_cells.count(PLAYERX) == len(players_cells):
+            return PLAYERX
+        if players_cells.count(PLAYERO) == len(players_cells):
+            return PLAYERO
 
     def check_win(self) -> int:
         """
@@ -168,6 +235,33 @@ class TTTBoard:
             If game is drawn, returns DRAW.
             If game is in progress, returns None.
         """
+
+        for cells in self.up_columns():
+            cell_values = self.get_player_on_cells(cells)
+            winner = self.get_winner(cell_values)
+            if winner is not None:
+                return winner
+
+        for cells in self.side_columns():
+            cell_values = self.get_player_on_cells(cells)
+            winner = self.get_winner(cell_values)
+            if winner is not None:
+                return winner
+
+        if self.is_square():
+            # Check for diagonals
+            cell_values = self.get_player_on_cells(self.diagonal_side_x())
+            winner = self.get_winner(cell_values)
+            if winner is not None:
+                return winner
+
+            cell_values = self.get_player_on_cells(self.diagonal_side_y())
+            winner = self.get_winner(cell_values)
+            if winner is not None:
+                return winner
+
+        if len(self.get_empty_squares()) == 0:
+            return DRAW
 
     def clone(self):
         """
@@ -186,7 +280,3 @@ def switch_player(player: int):
     if player == PLAYERX:
         return PLAYERO
     return PLAYERX
-
-
-def play_game(mc_move, trials, reverse):
-    pass

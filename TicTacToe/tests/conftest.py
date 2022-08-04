@@ -1,11 +1,73 @@
+import sys
 import pytest
 
+sys.path.append('C:/Users/Dell/python_projects')  # noqa
 
-@pytest.fixture
-def simple_ab():
-    return [1, 2, 4]
+from TicTacToe.constants import DRAW, EMPTY, PLAYERO, PLAYERX  # noqa
 
 
-@pytest.fixture
-def supply_url():
-    return "https://reqres.in/api"
+# Create test boards
+board_1 = [
+    [EMPTY, PLAYERX, PLAYERO],
+    [PLAYERX, PLAYERX, EMPTY],
+    [PLAYERO, EMPTY, PLAYERO],
+]
+
+board_2 = [
+    [PLAYERO, PLAYERX, PLAYERX],
+    [PLAYERO, PLAYERX, EMPTY],
+    [PLAYERO, EMPTY, PLAYERO],
+]
+
+board_3 = [
+    [EMPTY, PLAYERX, PLAYERO],
+    [PLAYERO, PLAYERX, EMPTY],
+    [PLAYERX, PLAYERO, PLAYERO],
+]
+
+board_4 = [
+    [PLAYERO, PLAYERX, PLAYERO, PLAYERX],
+    [EMPTY, PLAYERX, EMPTY, PLAYERO],
+    [PLAYERO, EMPTY, PLAYERO, PLAYERX],
+]
+
+board_5 = [
+    [PLAYERO, PLAYERX, PLAYERO, PLAYERX],
+    [EMPTY, PLAYERX, EMPTY, PLAYERO],
+    [PLAYERO, EMPTY, PLAYERO, PLAYERX],
+    [PLAYERX, EMPTY, EMPTY, PLAYERX],
+    [PLAYERO, PLAYERX, PLAYERO, PLAYERX],
+]
+
+
+# Win style boards
+win_board_1 = [
+    [EMPTY, PLAYERX, PLAYERO],
+    [PLAYERO, PLAYERX, EMPTY],
+    [PLAYERX, PLAYERX, PLAYERO],
+]
+
+win_board_2 = [
+    [PLAYERO, PLAYERX, PLAYERO],
+    [PLAYERO, PLAYERO, PLAYERX],
+    [PLAYERX, PLAYERX, PLAYERO],
+]
+
+win_board_3 = [
+    [PLAYERO, PLAYERX, PLAYERO, PLAYERX],
+    [PLAYERO, PLAYERO, PLAYERX, EMPTY],
+    [PLAYERX, PLAYERX, PLAYERO, EMPTY],
+    [PLAYERX, PLAYERX, PLAYERO, EMPTY],
+]
+
+win_board_4 = [
+    [PLAYERX, PLAYERX, PLAYERO, PLAYERX],
+    [PLAYERO, PLAYERO, PLAYERO, PLAYERO],
+    [PLAYERX, PLAYERX, PLAYERX, EMPTY],
+]
+
+win_board_5 = [
+    [PLAYERX, PLAYERX, PLAYERO, PLAYERX],
+    [PLAYERO, PLAYERO, PLAYERX, PLAYERO],
+    [PLAYERX, PLAYERX, PLAYERX, PLAYERO],
+]
