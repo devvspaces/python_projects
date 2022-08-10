@@ -1,9 +1,6 @@
 # Python Clone for GAME 2048
 > This is a python clone game challenge for '2048', details about the game can be found [here](https://en.wikipedia.org/wiki/2048_(video_game)). My version of this games give players the opportunity to play on different kinds of grids that is Square or Rectangular. Building the game thought me a lot about working with grids in python and python conventions enforced with pylint. To play this game online, head to [CodeSkulptor](https://py3.codeskulptor.org/#user307_biorjpH9nC_15.py) and run code. Also, you can also play game on your terminal by running the script.
 
-[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/devvspaces/python_projects/graphs/commit-activity)
-[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/devvspaces/python_projects/issues)
-
 
 ## Requirements  (Prerequisites)
 Tools and packages required to successfully install this project.
