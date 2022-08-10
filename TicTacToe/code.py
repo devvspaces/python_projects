@@ -5,7 +5,9 @@ Monte Carlo Tic-Tac-Toe Player
 import random
 from typing import List, Tuple, Type
 
-from . import poc_ttt_provided as provided
+import sys
+sys.path.append('C:/Users/Dell/python_projects')  # noqa
+from TicTacToe import poc_ttt_provided as provided
 
 # import poc_ttt_gui
 # import poc_ttt_provided as provided
@@ -14,7 +16,7 @@ from . import poc_ttt_provided as provided
 # Constants for Monte Carlo simulator
 # You may change the values of these constants as desired, but
 #  do not change their names.
-NTRIALS = 1          # Number of trials to run
+NTRIALS = 100        # Number of trials to run
 SCORE_CURRENT = 1.0  # Score for squares played by the current player
 SCORE_OTHER = 1.0    # Score for squares played by the other player
 
@@ -42,17 +44,22 @@ def mc_trial(board: T, player):
     for _ in range(count_empty_list):
         position = random.choice(empty_list)
         board.move(*position, current_player)
+        if board.check_win() == current_player:
+            break
         current_player = provided.switch_player(current_player)
         empty_list.remove(position)
 
 
 def add_score(player, value):
+    """Get the score to add depending on the current player
+    and the winner"""
     if player != value:
         return SCORE_CURRENT
     return SCORE_OTHER
 
 
 def get_score_to_add(player, winner, value):
+    """Get the score to add to the board cell"""
     if value == winner:
         return add_score(player, value)
     else:
@@ -74,11 +81,11 @@ def mc_update_scores(
     :type scores: List[List[int]]
     :param board: _description_
     :type board: T
-    :param player: _description_
+    :param player: the machine player
     :type player: int
     """
     winner = board.check_win()
-    if winner == provided.DRAW:
+    if winner is None or winner == provided.DRAW:
         return
     board_dim = board.get_dim()
     for row in range(board_dim[0]):
@@ -100,11 +107,11 @@ def get_best_move(board: T, scores) -> Tuple[int]:
     the board is full will not be tested.
     """
     empty_positions = board.get_empty_squares()
-    best_score = None
+    best_score = empty_positions[0]
     max_score = 0
     for row, col in empty_positions:
         score = scores[row][col]
-        if score > max_score:
+        if score >= max_score:
             max_score = score
             best_score = (row, col)
     return best_score
@@ -136,23 +143,33 @@ def mc_move(board: T, player, trials):
 
     scores = init_empty_scores(*board.get_dim())
 
+    # count = 0
+
     for _ in range(trials):
         # Clone current board
         clone = board.clone()
 
+        # print("before")
+        # print(clone.display(), '\n\n')
+
         # Run a trial simulation
         mc_trial(clone, player)
 
+        # print("after")
+        # print(clone.display(), '\n\n')
+
         # Score board cloned, Updates Scores
         mc_update_scores(scores, clone, player)
+        # clone.display()
+        # if clone.check_win() == provided.PLAYERO:
+        #     count += 1
+
+    # print("machine player won", count, "times")
 
     # Get Best move
     best_move = get_best_move(board, scores)
+    # print(scores)
     return best_move
-
-
-def play_game(mc_move, trials, reverse):
-    pass
 
 
 # Test game with the console or the GUI.  Uncomment whichever

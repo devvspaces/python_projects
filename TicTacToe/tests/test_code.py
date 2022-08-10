@@ -1,18 +1,30 @@
+# flake8: noqa
+
+from copy import deepcopy
 import sys
+from TicTacToe import poc_ttt_provided as provided
+import pytest
 
-import pytest  # noqa
+sys.path.append('C:/Users/Dell/python_projects')
+from TicTacToe.code import (
+    NTRIALS, SCORE_CURRENT, SCORE_OTHER, add_score,
+    get_score_to_add, mc_move, mc_trial,
+    mc_update_scores, init_empty_scores,
+    get_best_move
+)
+from TicTacToe.constants import (
+    DIAG_X, DIAG_Y, DOWN, DRAW,
+    EMPTY, PLAYERO, PLAYERX, RIGHT
+)
+from TicTacToe.poc_ttt_provided import TTTBoard, switch_player
+from TicTacToe.poc_ttt_provided import get_board_dim
 
-sys.path.append('C:/Users/Dell/python_projects')  # noqa
-from TicTacToe.code import (SCORE_CURRENT, SCORE_OTHER, add_score,  # noqa
-                            get_score_to_add)
-from TicTacToe.constants import (DIAG_X, DIAG_Y, DOWN, DRAW, EMPTY, PLAYERO,
-                                 PLAYERX, RIGHT)
-from TicTacToe.poc_ttt_provided import TTTBoard, switch_player  # noqa
-from TicTacToe.poc_ttt_provided import get_board_dim  # noqa
-
-from conftest import (board_1, board_2, board_3, board_4, board_5,  # noqa
-                      win_board_1, win_board_2, win_board_3, win_board_4,
-                      win_board_5)
+from conftest import (
+    board_1, board_2, board_3, board_4, board_5,
+    win_board_1, win_board_2, win_board_3, win_board_4,
+    win_board_5, score_1, score_2, result_1, result_2,
+    expected_1, expected_2, score_5, result_5, expected_5
+)
 
 
 @pytest.mark.parametrize("input_1, input_2, output", [
@@ -375,3 +387,79 @@ def test_display(board):
 def test_switch_player(player, expected):
     computed = switch_player(player)
     assert computed == expected
+
+
+@pytest.mark.parametrize(
+    "board",
+    [
+        board_1, board_2, board_3, board_4, board_5,
+        win_board_1, win_board_2, win_board_3, win_board_4,
+        win_board_5,
+    ]
+)
+def test_mc_trial(board):
+    board = TTTBoard(board=board)
+    copied = deepcopy(board._board)
+    mc_trial(board, PLAYERX)
+    if len(board.get_empty_squares()) > 0:
+        assert board._board != copied
+    else:
+        assert len(board.get_empty_squares()) == 0
+
+
+@pytest.mark.parametrize(
+    "board, expected",
+    [
+        (board_1, score_1),
+        (board_2, score_2),
+        (board_5, score_5),
+    ]
+)
+def test_mc_update_scores(board, expected: list[list[int]]):
+    for player in [PLAYERO, PLAYERX]:
+        board_obj = TTTBoard(board=board)
+        empty_scores = [[0 for _ in row] for row in expected]
+        mc_update_scores(empty_scores, board_obj, player)
+        assert empty_scores == expected
+
+
+@pytest.mark.parametrize(
+    "dim, expected",
+    [
+        ((2, 2), [[0, 0], [0, 0]]),
+        ((3, 3), [[0, 0, 0], [0, 0, 0], [0, 0, 0]]),
+        ((2, 3), [[0, 0, 0], [0, 0, 0]]),
+    ]
+)
+def test_init_empty_scores(dim, expected):
+    computed = init_empty_scores(*dim)
+    assert computed == expected
+
+
+@pytest.mark.parametrize(
+    "board, scores, expected",
+    [
+        (board_1, result_1, expected_1),
+        (board_2, result_2, expected_2),
+        (board_5, result_5, expected_5),
+    ]
+)
+def test_get_best_move(board, scores, expected):
+    board = TTTBoard(board=board)
+    computed = get_best_move(board, scores)
+    assert computed == expected
+
+
+def test_mc_move():
+    """Test if the mc_move is returning the best move"""
+    expected = (1, 2)
+    values = []
+    test_trials = 30
+    board = TTTBoard(
+        board=[[provided.PLAYERX, provided.EMPTY, provided.EMPTY], [provided.PLAYERO, provided.PLAYERO, provided.EMPTY], [provided.EMPTY, provided.PLAYERX, provided.EMPTY]]
+    )
+    for _ in range(test_trials):
+        value = mc_move(board, provided.PLAYERX, NTRIALS)
+        values.append(value)
+    perc = (values.count(expected) / test_trials) * 100
+    assert perc >= 100

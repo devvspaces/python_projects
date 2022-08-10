@@ -280,3 +280,37 @@ def switch_player(player: int):
     if player == PLAYERX:
         return PLAYERO
     return PLAYERX
+
+
+def play_game(mc_move, trials, reverse):  # pragma: no cover
+    board = TTTBoard(dim=(3, 3))
+    player = PLAYERX
+    while board.check_win() is None:
+        board.display()
+        row = 0
+        col = 0
+        if player == PLAYERX:
+            while True:
+                # User
+                row = int(input("Enter the row you want to play: "))
+                col = int(input("Enter the col you want to play: "))
+                if board.square(row, col) == EMPTY:
+                    break
+                print("You can't play there, it's occupied")
+        else:
+            # Machine
+            row, col = mc_move(board, player, trials)
+
+        board.move(row, col, player)
+        player = switch_player(player)
+        print("\n\n")
+
+    board.display()
+
+    won = board.check_win()
+    if won == PLAYERO:
+        print("Computer Won! So Smart of me!")
+    elif won == PLAYERX:
+        print("Congratulations! You won!")
+    else:
+        print("Wonderful Draw!")
