@@ -11,8 +11,8 @@ def worker(i, host_len):
     print('done')
 
 
-ip = '19.244.47.118'
-mask = '255.255.252.112'
+ip = '192.168.150.143'
+mask = '255.255.128.0'
 
 
 def xbin(val):
@@ -84,9 +84,9 @@ def cidr_ip_submask(ip):
     return ip, mask
 
 
-# ip, mask = cidr_ip_submask('19.244.47.118/22')
+# ip, mask = cidr_ip_submask('192.168.150.143/17')
+# print(ip, mask)
 network_ip, host_range, host_len, rel_network = get_network_host(ip, mask)
-
 
 print('This is the network_ip =', network_ip)
 
